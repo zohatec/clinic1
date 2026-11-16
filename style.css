@@ -28,7 +28,9 @@
 /* ---------- বেসিক ---------- */
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:100px}
-body{font-family:var(--font-bn);background:var(--bg);color:var(--text);line-height:1.75;overflow-x:hidden;transition:background .35s,color .35s}
+body{font-family:var(--font-bn);background:var(--bg);color:var(--text);line-height:1.75;overflow-x:hidden;overflow-x:clip;transition:background .35s,color .35s}
+/* মোবাইল মেনু খোলা থাকলে ব্যাকগ্রাউন্ড স্ক্রল লক — ফাঁপা স্ক্রল/স্ক্রলবার বন্ধ */
+body.menu-open{overflow:hidden}
 body.lang-en{font-family:var(--font-en)}
 body.lang-en .eyebrow{letter-spacing:2.5px;text-transform:uppercase}
 img{max-width:100%;display:block}
@@ -126,9 +128,9 @@ section{padding:90px 0}
 .sec-desc.left{text-align:left}
 
 /* ---------- গ্রিড ---------- */
-.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:24px}
-.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(255px,100%),1fr));gap:24px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:24px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:16px}
 
 /* ---------- সার্ভিস কার্ড ---------- */
 .service-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 26px;transition:.35s;position:relative;overflow:hidden}
@@ -161,7 +163,10 @@ section{padding:90px 0}
 .doc-book:hover{background:var(--primary);color:#fff}
 
 /* ---------- সময়সূচি টেবিল ---------- */
-.table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface)}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);background:var(--surface);scrollbar-width:thin;scrollbar-color:var(--primary) transparent}
+.table-wrap::-webkit-scrollbar{height:6px}
+.table-wrap::-webkit-scrollbar-track{background:transparent}
+.table-wrap::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
 .schedule-table{width:100%;border-collapse:collapse;min-width:720px}
 .schedule-table th{background:var(--primary);color:#fff;padding:15px 18px;text-align:left;font-size:15px;white-space:nowrap}
 .schedule-table td{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14.5px}
@@ -272,7 +277,7 @@ textarea.form-control{resize:vertical;min-height:105px}
 .c-card:hover{border-color:var(--primary);transform:translateX(6px)}
 .c-icon{width:50px;height:50px;border-radius:14px;background:var(--primary-tint);color:var(--primary);display:grid;place-items:center;font-size:20px;flex-shrink:0}
 .c-card small{color:var(--muted);font-size:12.5px;display:block}
-.c-card b{font-size:15px;line-height:1.6}
+.c-card b{font-size:15px;line-height:1.6;overflow-wrap:anywhere;word-break:break-word}
 .c-card a:hover{color:var(--primary)}
 .map-wrap{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:6px solid var(--surface)}
 .map-wrap iframe{width:100%;height:400px;border:0;display:block}
@@ -293,7 +298,7 @@ footer h4::after{content:'';position:absolute;left:0;bottom:0;width:36px;height:
 .footer-links a{font-size:14.5px;transition:.3s;display:inline-flex;gap:8px;align-items:center}
 .footer-links a::before{content:'\f105';font-family:'Font Awesome 6 Free';font-weight:900;color:var(--primary);font-size:12px}
 .footer-links a:hover{color:#fff;transform:translateX(5px)}
-.footer-contact li{display:flex;gap:11px;margin-bottom:12px;font-size:14.5px;align-items:flex-start}
+.footer-contact li{display:flex;gap:11px;margin-bottom:12px;font-size:14.5px;align-items:flex-start;overflow-wrap:anywhere}
 .footer-contact i{color:#7dd3e8;margin-top:6px;width:16px}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.09);padding:18px 0;text-align:center;font-size:14px}
 
@@ -345,46 +350,67 @@ footer h4::after{content:'';position:absolute;left:0;bottom:0;width:36px;height:
 }
 @media(max-width:768px){
   section{padding:66px 0}
-                    /* 🔧 সংশোধিত মোবাইল মেনু:*/
+  /* 🔧 মোবাইল মেনু v2: বন্ধ অবস্থায় সম্পূর্ণ display:none —
+     লুকানো মেনু আর কোনো ফাঁপা স্ক্রল/ওভারফ্লো তৈরি করবে না */
+  .nav-inner{position:static} /* মেনু এখন স্টিকি হেডার পুরোটার সাপেক্ষে পজিশন নেবে */
   .nav-links{
     position:absolute;
     top:100%;
     left:0;
-    width:100%;
+    right:0;
+    width:auto;
     background:var(--surface);
     flex-direction:column;
     gap:2px;
     padding:14px 5% 20px;
     box-shadow:0 18px 30px rgba(3,42,64,.14);
     border-top:1.5px solid var(--border);
-    transform:translateY(-14px);
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-    transition:transform .4s ease,opacity .4s ease,visibility .4s;
+    display:none;
     z-index:1;
   }
   #header.open .nav-links{
-    transform:translateY(0);
-    opacity:1;
-    visibility:visible;
-    pointer-events:auto;
+    display:flex;
+    animation:menuDrop .38s ease both;
   }
   .nav-links a{padding:11px 4px;border-bottom:1px solid var(--border);font-size:15.5px}
   .nav-links a:last-child{border-bottom:none}
   #hamburger{display:grid}
   .hide-sm{display:none}
+  /* 🔧 লোগো ফিক্স: এক লাইনে রাখতে nowrap + ফ্লুইড ফন্ট সাইজ */
+  .logo{min-width:0}
+  .logo>div{min-width:0}
+  .logo-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(13px,4.3vw,17px)}
+  body.lang-en .logo-name{font-size:clamp(9.5px,2.9vw,14px)}
+  .logo-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(6.5px,2.1vw,9px);letter-spacing:1.5px}
+  body.lang-en .logo-sub{font-size:clamp(6.5px,1.9vw,8px);letter-spacing:1px}
   .form-card{padding:24px 20px}
   .testi-box{padding:0}
   .testi-ctrl{display:none}
   .testi-slide{padding:32px 24px}
 }
+@keyframes menuDrop{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
 @media(max-width:560px){
   .form-grid{grid-template-columns:1fr}
   .hero-btns .btn{width:100%}
   .hero-stats{gap:18px 26px}
   .footer-grid{grid-template-columns:1fr;gap:30px}
   .map-btn{left:20px;right:auto}
+  /* 🔧 হেডার কমপ্যাক্ট: লোগোর টেক্সটকে জায়গা দিতে বাটন/গ্যাপ ছোট */
+  .logo{gap:9px}
+  .logo-icon{width:40px;height:40px;font-size:18px;border-radius:11px}
+  .nav-inner{gap:9px}
+  .nav-actions{gap:7px}
+  .icon-btn{width:38px;height:38px;font-size:15px}
+  .btn-pill{padding:7px 12px;font-size:12px}
+}
+@media(max-width:380px){
+  .nav-actions{gap:5px}
+  .icon-btn{width:36px;height:36px}
+  .btn-pill{padding:6px 10px;font-size:11.5px}
+}
+@media(max-width:340px){
+  /* খুব ছোট স্ক্রিনে ইংরেজি সাব-টেক্সট লুকিয়ে নামকে প্রাধান্য */
+  #header .logo-sub{display:none}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
