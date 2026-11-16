@@ -602,10 +602,13 @@ function init(){
   const burger = $('#hamburger');
   burger.addEventListener('click', () => {
     const open = $('#header').classList.toggle('open');
+    // মেনু খোলা থাকলে ব্যাকগ্রাউন্ড স্ক্রল লক — ফাঁপা স্ক্রল/স্ক্রলবার তৈরি হবে না
+    document.body.classList.toggle('menu-open', open);
     burger.innerHTML = open ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
   });
   $$('.nav-links a').forEach(a => a.addEventListener('click', () => {
     $('#header').classList.remove('open');
+    document.body.classList.remove('menu-open');
     burger.innerHTML = '<i class="fa-solid fa-bars"></i>';
   }));
 
